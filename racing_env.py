@@ -5,6 +5,7 @@ from __future__ import print_function
 import abc
 import tensorflow as tf
 import numpy as np
+import queue
 
 from tf_agents.environments import py_environment
 from tf_agents.environments import tf_environment
@@ -15,6 +16,7 @@ from tf_agents.environments import wrappers
 from tf_agents.environments import suite_gym
 from tf_agents.trajectories import time_step as ts
 from game import Game
+
 
 tf.compat.v1.enable_v2_behavior()
 
@@ -30,6 +32,7 @@ class RaceGameEnv(py_environment.PyEnvironment):
                                         maximum=1,name='observation')
         self._state = self.game.takess()
         self._episode_ended = False
+        self._past_speed_queue = queue.Queue(20)
         print("INIT IS TRIGGERED")
 
     def action_spec(self):
@@ -42,7 +45,8 @@ class RaceGameEnv(py_environment.PyEnvironment):
         self.game.resetGame()
         self._state = self.game.takess()
         self._episode_ended = False
-        #print("RESET METHOD IS TRIGGERED")
+        self._past_speed_queue = queue.Queue(20)
+        print("RESET METHOD IS TRIGGERED")
         #print(self._state.shape)
         return ts.restart(self._state)
 
@@ -65,9 +69,23 @@ class RaceGameEnv(py_environment.PyEnvironment):
         elif action == 4:
             self.game.move('none')
         
-        print("STEP METHOD IS TRIGGERED " , action)
+        #print("STEP METHOD IS TRIGGERED " , action)
         self._state = self.game.takess()
-        speed = self.game.getSpead()
+        speed = int(self.game.getSpead())
+        
+        if(self._past_speed_queue.full()):
+            self._past_speed_queue.get()
+        self._past_speed_queue.put(speed)
+        temp_list = list(self._past_speed_queue.queue)
+
+        #print(temp_list)
+        if(len(temp_list)>=20 and max(temp_list)<26):
+            print("GAME OVER")
+            self._episode_ended = True
+            return ts.termination(self._state, reward=-200)
+        elif (len(temp_list)>=20):
+            speed = speed + int(sum(temp_list)/200) #Additional reward for better average speeds
+
         
         return ts.transition(self._state, reward=speed, discount=1.0)
         

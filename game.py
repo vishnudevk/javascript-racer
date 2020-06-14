@@ -41,14 +41,14 @@ class Game():
         
         #img = np.true_divide(img, 255) #normalize
         img = img/ 255.0
-        print("ss taken in %s seconds" % (time.time() - start_time))
-        print(img.shape)
+        #print("ss taken in %s seconds" % (time.time() - start_time))
+        #print(img.shape)
         return img 
 
 
     def getSpead(self):
         speed = self.driver.find_element_by_css_selector("#speed_value").get_attribute('innerHTML')
-        print(speed)
+        #print(speed)
         return speed 
 
     
