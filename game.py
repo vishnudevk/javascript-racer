@@ -38,8 +38,11 @@ class Game():
         img =img.crop(subImg) #crop image just to the required area
 
         img = np.array(img)
+        
         #img = np.true_divide(img, 255) #normalize
+        img = img/ 255.0
         print("ss taken in %s seconds" % (time.time() - start_time))
+        print(img.shape)
         return img 
 
 
@@ -73,7 +76,7 @@ class Game():
         action_key_down_f = ActionChains(self.driver).key_down("f")
         action_key_up_f = ActionChains(self.driver).key_up("f")
 
-        keyPresstime = .1
+        #keyPresstime = .1
 
         #endtime = time.time() + keyPresstime
         self.action_up.perform() 
