@@ -113,3 +113,19 @@ provide original art to turn this into a real game please get in touch!
 
 Chrome driver 
 https://chromedriver.chromium.org/downloads
+
+
+Install selinium
+pip install selenium
+
+Install TF agents
+pip install tf-agents
+
+Install gym
+pip install gym
+
+pillow
+pip install Pillow
+
+Mat plot lib
+pip install matplotlib

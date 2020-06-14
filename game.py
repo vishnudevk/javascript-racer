@@ -2,14 +2,19 @@ import base64
 from selenium import webdriver
 import time 
 from selenium.webdriver import ActionChains
+from PIL import Image
+from io import BytesIO
+import numpy as np
 
-class game():
+class Game():
 
-    def __init__(self):
+    def __init__(self, url="http://127.0.0.1:5500/v4.final.html"):
         self.driver = webdriver.Chrome('./chromedriver')
-        self.driver.get("http://127.0.0.1:5500/v4.final.html")
+        self.driver.get(url) #"http://127.0.0.1:5500/v4.final.html"
 
+        self.action_up = ActionChains(self.driver).key_up("f")#keyup for some random key. this should be triggered to stop the car
         self.canvas = self.driver.find_element_by_css_selector("#canvas")
+
 
     def takess(self):
         start_time = time.time()
@@ -17,8 +22,25 @@ class game():
         canvas_base64 = self.driver.execute_script("return arguments[0].toDataURL('image/png').substring(21);", self.canvas)
         # decode
         canvas_png = base64.b64decode(canvas_base64)
-        #print(type(canvas_png))
+        #print(type(bytearray(canvas_png)))
+
+        #img = Image.open(BytesIO(canvas_png))
+        img = Image.open(BytesIO(canvas_png))
+        
+        subImg = (0, 90, 240, 145)
+        
+        #img = self.remove_transparency(img)
+        background = Image.new("RGB", img.size, (255, 255, 255))
+        background.paste(img, mask=img.split()[3]) # 3 is the alpha channel
+
+        img = background
+        
+        img =img.crop(subImg) #crop image just to the required area
+
+        img = np.array(img)
+        #img = np.true_divide(img, 255) #normalize
         print("ss taken in %s seconds" % (time.time() - start_time))
+        return img 
 
 
     def getSpead(self):
@@ -26,10 +48,10 @@ class game():
         print(speed)
         return speed 
 
-
-
+    
 
     def resetGame(self):
+        self.action_up.perform()
         self.driver.execute_script("playerX = 0; speed = 0;resetRoad();")
         #driver.find_elements_by_tag_name("body")[0].send_keys("\uE035")
         #driver.get("http://127.0.0.1:5500/v4.final.html")
@@ -53,28 +75,47 @@ class game():
 
         keyPresstime = .1
 
-        endtime = time.time() + keyPresstime
-        
+        #endtime = time.time() + keyPresstime
+        self.action_up.perform() 
+
         if direction == 'up':
             action_down = action_key_down_w
-            action_up = action_key_up_w
+            self.action_up = action_key_up_w
         elif direction == 'down':   
             action_down = action_key_down_s
-            action_up = action_key_up_s
+            self.action_up = action_key_up_s
         elif direction == 'left' :  
             action_down = action_key_down_a
-            action_up = action_key_up_a
+            self.action_up = action_key_up_a
         elif direction == 'right' :  
             action_down = action_key_down_d
-            action_up = action_key_up_d
+            self.action_up = action_key_up_d
         else:
             action_down = action_key_down_f
-            action_up = action_key_up_f
+            self.action_up = action_key_up_f
 
-        while True:
-            action_down.perform()
+        #while True:
+        action_down.perform()
 
-            if time.time() > endtime:
-                action_up.perform()
-                break
+            #if time.time() > endtime:
+            #    action_up.perform()
+            #    break
 
+
+
+    def remove_transparency(self, im, bg_colour=(255, 255, 255)):
+        # Only process if image has transparency (https://stackoverflow.com/a/1963146)
+        if im.mode in ('RGBA', 'LA') or (im.mode == 'P' and 'transparency' in im.info):
+
+            # Need to convert to RGBA if LA format due to a bug in PIL (https://stackoverflow.com/a/1963146)
+            alpha = im.convert('RGBA').split()[-1]
+
+            # Create a new background image of our matt color.
+            # Must be RGBA because paste requires both images have the same format
+            # (https://stackoverflow.com/a/8720632  and  https://stackoverflow.com/a/9459208)
+            bg = Image.new("RGBA", im.size, bg_colour + (255,))
+            bg.paste(im, mask=alpha)
+            return bg
+
+        else:
+            return im
