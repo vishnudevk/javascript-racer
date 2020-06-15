@@ -22,15 +22,18 @@ def start_server():
             #server_thread.start()
             #_httpd = httpd
 
+def server_exceptionCatcher():
+    try:            
+        start_server()
+    except:
+        print("Server already started")
+        print("serving at port", PORT)
+
 
 def server_restart():
-    try:            
-        server_thread = threading.Thread(target=start_server)
-        server_thread.daemon = True
-        server_thread.start()
-    except:
-        print("SERVER ALREADY STARTED")
-
+    server_thread = threading.Thread(target=server_exceptionCatcher)
+    server_thread.daemon = True
+    server_thread.start()
 
 class Game():
 
