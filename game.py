@@ -5,11 +5,43 @@ from selenium.webdriver import ActionChains
 from PIL import Image
 from io import BytesIO
 import numpy as np
+import platform
+import http.server
+import socketserver
+import threading
+
+PORT = 8000
+
+def start_server():
+        Handler = http.server.SimpleHTTPRequestHandler
+        with socketserver.TCPServer(("", PORT), Handler) as httpd:
+            print("serving at port", PORT)
+            httpd.serve_forever()
+            #server_thread = threading.Thread(target=httpd.serve_forever)
+            #server_thread.daemon = True
+            #server_thread.start()
+            #_httpd = httpd
+
+
+def server_restart():
+    try:            
+        server_thread = threading.Thread(target=start_server)
+        server_thread.daemon = True
+        server_thread.start()
+    except:
+        print("SERVER ALREADY STARTED")
+
 
 class Game():
 
-    def __init__(self, url="http://127.0.0.1:5500/v4.final.html"):
-        self.driver = webdriver.Chrome('./chromedriver')
+    def __init__(self, url="http://localhost:" + str(PORT)+ "/v4.final.html"):
+
+        server_restart()        
+
+        if 'Windows' == platform.system():
+            self.driver = webdriver.Chrome('./config/chromedriver_win.exe')
+        else:
+            self.driver = webdriver.Chrome('./config/chromedriver')
         self.driver.get(url) #"http://127.0.0.1:5500/v4.final.html"
 
         self.action_up = ActionChains(self.driver).key_up("f")#keyup for some random key. this should be triggered to stop the car
@@ -17,7 +49,7 @@ class Game():
 
 
     def takess(self):
-        start_time = time.time()
+        #start_time = time.time()
         # get the canvas as a PNG base64 string
         canvas_base64 = self.driver.execute_script("return arguments[0].toDataURL('image/png').substring(21);", self.canvas)
         # decode
@@ -122,3 +154,6 @@ class Game():
 
         else:
             return im
+
+
+        
