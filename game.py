@@ -37,7 +37,7 @@ def server_restart():
 
 class Game():
 
-    def __init__(self, url="http://localhost:" + str(PORT)+ "/v4.final.html"):
+    def __init__(self, url="http://localhost:" + str(PORT)+ "/v4.final.noCars.html"): #"/v4.final.html"):
 
         server_restart()        
 
@@ -71,6 +71,9 @@ class Game():
         img = background
         
         img =img.crop(subImg) #crop image just to the required area
+
+        #img = img.convert('1') # convert image to black and white
+        #img1.save('result.png')
 
         img = np.array(img)
         
