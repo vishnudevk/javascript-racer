@@ -114,9 +114,10 @@ class Game():
         action_key_down_f = ActionChains(self.driver).key_down("f")
         action_key_up_f = ActionChains(self.driver).key_up("f")
 
-        #keyPresstime = .1
+        keyPresstime = .2
 
-        #endtime = time.time() + keyPresstime
+        endtime = time.time() + keyPresstime
+        
         self.action_up.perform() 
 
         if direction == 'up':
@@ -135,12 +136,11 @@ class Game():
             action_down = action_key_down_f
             self.action_up = action_key_up_f
 
-        #while True:
         action_down.perform()
 
-            #if time.time() > endtime:
-            #    action_up.perform()
-            #    break
+        while True:
+            if time.time() > endtime:
+                break
 
 
 
