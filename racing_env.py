@@ -22,6 +22,9 @@ tf.compat.v1.enable_v2_behavior()
 
 stack_size = 40
 
+action_key_up = ActionChains(self.driver).key_up("w")
+
+
 class RaceGameEnv(py_environment.PyEnvironment):
 
     def __init__(self):
@@ -52,7 +55,7 @@ class RaceGameEnv(py_environment.PyEnvironment):
         return ts.restart(self._state)
 
     def _step(self, action):
-
+        action_key_up.perform()
         if self._episode_ended:
             # The last action ended the episode. Ignore the current action and start
             # a new episode.
@@ -60,20 +63,22 @@ class RaceGameEnv(py_environment.PyEnvironment):
 
         # Make sure episodes don't go on forever.
         if action == 0:
-            self.game.move('up')
+            action_up = self.game.move('up')
         elif action == 1:
-            self.game.move('left')
+            action_up = self.game.move('left')
         elif action == 2:
-            self.game.move('down')
+            action_up = self.game.move('down')
         elif action == 3:
-            self.game.move('right')
+            action_up = self.game.move('right')
         elif action == 4:
-            self.game.move('none')
+            action_up = self.game.move('none')
         
         #print("STEP METHOD IS TRIGGERED " , action)
         self._state = self.game.takess()
         speed = int(self.game.getSpead())
         
+        action_key_up = action_up
+
         if(self._past_speed_queue.full()):
             self._past_speed_queue.get()
         self._past_speed_queue.put(speed)

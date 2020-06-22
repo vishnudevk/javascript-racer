@@ -47,7 +47,7 @@ class Game():
             self.driver = webdriver.Chrome('./config/chromedriver')
         self.driver.get(url) #"http://127.0.0.1:5500/v4.final.html"
 
-        self.action_up = ActionChains(self.driver).key_up("f")#keyup for some random key. this should be triggered to stop the car
+        #self.action_up = ActionChains(self.driver).key_up("f")#keyup for some random key. this should be triggered to stop the car
         self.canvas = self.driver.find_element_by_css_selector("#canvas")
 
 
@@ -92,8 +92,8 @@ class Game():
     
 
     def resetGame(self):
-        self.action_up.perform()
-        self.driver.execute_script("playerX = 0; speed = 0;resetRoad();")
+        #self.action_up.perform()
+        self.driver.execute_script("playerX = 0; /*position = 0;*/ playerZ = null; speed = 0;resetRoad();reset(); keyLeft = false; keyRight = false; keyFaster = false; keySlower = false;")
         #driver.find_elements_by_tag_name("body")[0].send_keys("\uE035")
         #driver.get("http://127.0.0.1:5500/v4.final.html")
 
@@ -118,30 +118,31 @@ class Game():
 
         endtime = time.time() + keyPresstime
         
-        self.action_up.perform() 
+        #self.action_up.perform() 
 
         if direction == 'up':
             action_down = action_key_down_w
-            self.action_up = action_key_up_w
+            action_up = action_key_up_w
         elif direction == 'down':   
             action_down = action_key_down_s
-            self.action_up = action_key_up_s
+            action_up = action_key_up_s
         elif direction == 'left' :  
             action_down = action_key_down_a
-            self.action_up = action_key_up_a
+            action_up = action_key_up_a
         elif direction == 'right' :  
             action_down = action_key_down_d
-            self.action_up = action_key_up_d
+            action_up = action_key_up_d
         else:
             action_down = action_key_down_f
-            self.action_up = action_key_up_f
+            action_up = action_key_up_f
 
         action_down.perform()
 
         while True:
             if time.time() > endtime:
                 break
-
+        
+        return action_up
 
 
     def remove_transparency(self, im, bg_colour=(255, 255, 255)):
