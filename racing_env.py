@@ -20,7 +20,7 @@ from game import Game
 
 tf.compat.v1.enable_v2_behavior()
 
-stack_size = 10
+stack_size = 5
 
 #action_key_up = ActionChains(self.driver).key_up("w")
 
@@ -88,15 +88,20 @@ class RaceGameEnv(py_environment.PyEnvironment):
         self._past_speed_queue.put(speed)
         temp_list = list(self._past_speed_queue.queue)
 
+        reward_val = speed -3
+        if reward_val>0:
+            reward_val = reward_val*2
+
+        
         #print(temp_list)
         if(len(temp_list)>=stack_size and max(temp_list)<3):
             #print("GAME OVER")
             self._episode_ended = True
             return ts.termination(self._state, reward=-50.0)
         elif (len(temp_list)>=stack_size):
-            speed = speed - 10
-            speed = speed + int(sum(temp_list)/10) #Additional reward for better average speeds
+            #reward_val = reward_val - 4
+            reward_val = reward_val + int(sum(temp_list)/10) #Additional reward for better average speeds
 
-        
-        return ts.transition(self._state, reward=speed, discount=.7)
+        print('Action is = '+ str(action) +' :: Speed is = ' + str(speed) +' :: Reward is ='+str(reward_val))
+        return ts.transition(self._state, reward=reward_val, discount=.7)
         
