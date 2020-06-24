@@ -1,3 +1,42 @@
+Javascript Pseudo 3D Racer TensorFlow AI Agent 
+==============================================
+Open main.ipynb and run steps.
+I tried to implement Tensorflow DQN agent and environment based on https://www.tensorflow.org/agents/tutorials/1_dqn_tutorial
+As of now Agent is not learning anything. 
+Tried tweaking many network parameters. loss is oscillating and returns are not improving.
+Not sure if the network is of 2 conv networks and 2 dense layers are not good enough to learn this environment.
+
+Please help me out.
+
+
+Following are the dependencies. 
+==============================================
+Chrome driver 
+https://chromedriver.chromium.org/downloads
+
+Install selinium
+pip install selenium
+
+Install TF agents
+pip install tf-agents
+
+Install gym
+pip install gym
+
+pillow
+pip install Pillow
+
+Mat plot lib
+pip install matplotlib
+
+
+
+
+
+
+
+
+
 Javascript Pseudo 3D Racer
 ==========================
 
@@ -109,23 +148,3 @@ project and should not be reproduced.
 genesis version of outrun and used here as teaching examples. If there are any pixel artists out there who want to 
 provide original art to turn this into a real game please get in touch!
 
-
-
-Chrome driver 
-https://chromedriver.chromium.org/downloads
-
-
-Install selinium
-pip install selenium
-
-Install TF agents
-pip install tf-agents
-
-Install gym
-pip install gym
-
-pillow
-pip install Pillow
-
-Mat plot lib
-pip install matplotlib
