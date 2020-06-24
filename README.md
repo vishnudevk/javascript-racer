@@ -1,9 +1,13 @@
 Javascript Pseudo 3D Racer TensorFlow AI Agent 
 ==============================================
+
 Open main.ipynb and run steps.
 I tried to implement Tensorflow DQN agent and environment based on https://www.tensorflow.org/agents/tutorials/1_dqn_tutorial
+
 As of now Agent is not learning anything. 
+
 Tried tweaking many network parameters. loss is oscillating and returns are not improving.
+
 Not sure if the network is of 2 conv networks and 2 dense layers are not good enough to learn this environment.
 
 Please help me out.
