@@ -18,19 +18,19 @@ Following are the dependencies.
 Chrome driver 
 https://chromedriver.chromium.org/downloads
 
-Install selinium
+Install selinium :- 
 pip install selenium
 
-Install TF agents
+Install TF agents:-
 pip install tf-agents
 
-Install gym
+Install gym:-
 pip install gym
 
-pillow
+pillow:-
 pip install Pillow
 
-Mat plot lib
+Mat plot lib:-
 pip install matplotlib
 
 
