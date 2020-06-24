@@ -20,9 +20,9 @@ from game import Game
 
 tf.compat.v1.enable_v2_behavior()
 
-stack_size = 40
+stack_size = 10
 
-action_key_up = ActionChains(self.driver).key_up("w")
+#action_key_up = ActionChains(self.driver).key_up("w")
 
 
 class RaceGameEnv(py_environment.PyEnvironment):
@@ -37,6 +37,7 @@ class RaceGameEnv(py_environment.PyEnvironment):
         self._state = self.game.takess()
         self._episode_ended = False
         self._past_speed_queue = queue.Queue(stack_size)
+        self.action_key_up = "W"
         print("INIT IS TRIGGERED")
 
     def action_spec(self):
@@ -55,7 +56,10 @@ class RaceGameEnv(py_environment.PyEnvironment):
         return ts.restart(self._state)
 
     def _step(self, action):
-        action_key_up.perform()
+
+        if(self.action_key_up != 'W'):
+            self.action_key_up.perform()
+        
         if self._episode_ended:
             # The last action ended the episode. Ignore the current action and start
             # a new episode.
@@ -77,7 +81,7 @@ class RaceGameEnv(py_environment.PyEnvironment):
         self._state = self.game.takess()
         speed = int(self.game.getSpead())
         
-        action_key_up = action_up
+        self.action_key_up = action_up
 
         if(self._past_speed_queue.full()):
             self._past_speed_queue.get()
@@ -91,8 +95,8 @@ class RaceGameEnv(py_environment.PyEnvironment):
             return ts.termination(self._state, reward=-50.0)
         elif (len(temp_list)>=stack_size):
             speed = speed - 10
-            speed = speed + int(sum(temp_list)/100) #Additional reward for better average speeds
+            speed = speed + int(sum(temp_list)/10) #Additional reward for better average speeds
 
         
-        return ts.transition(self._state, reward=speed, discount=1)
+        return ts.transition(self._state, reward=speed, discount=.7)
         
